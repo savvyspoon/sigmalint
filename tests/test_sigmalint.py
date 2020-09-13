@@ -11,14 +11,14 @@ def test_input_required():
     runner = CliRunner()
     result = runner.invoke(sigmalint.cli, [])
     assert result.exit_code != 0
-    assert result.output.__contains__("Missing option '--inputdir'")
+    assert result.output.__contains__("Missing option '--sigmainput'")
 
 
 def test_invalid_method():
     runner = CliRunner()
     with runner.isolated_filesystem():
         Path("sigma").mkdir(exist_ok=True)
-        result = runner.invoke(sigmalint.cli, ['--inputdir', 'sigma', '--method', 'junk'])
+        result = runner.invoke(sigmalint.cli, ['--sigmainput', 'sigma', '--method', 'junk'])
         assert result.exit_code != 0
         assert result.output.__contains__("Invalid value for '--method'")
 
@@ -29,7 +29,7 @@ def test_parse_valid_sigma():
         f = open('sigma/test.yml', 'w')
         f.write(yaml.safe_dump(valid_yaml))
         f.close()
-        result = runner.invoke(sigmalint.cli, ['--inputdir', 'sigma', '--method', 's2'])
+        result = runner.invoke(sigmalint.cli, ['--sigmainput', 'sigma', '--method', 's2'])
         assert result.exit_code == 0
         assert result.output.__contains__("Total Valid Rule Files: 1/1")
 
@@ -40,7 +40,7 @@ def test_parse_invalid_sigma():
         f = open('sigma/test.yml', 'w')
         f.write(yaml.safe_dump(invalid_yaml))
         f.close()
-        result = runner.invoke(sigmalint.cli, ['--inputdir', 'sigma', '--method', 's2'])
+        result = runner.invoke(sigmalint.cli, ['--sigmainput', 'sigma', '--method', 's2'])
         assert result.exit_code == 0
         assert result.output.__contains__("Total Valid Rule Files: 0/1")
 
